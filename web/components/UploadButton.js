@@ -20,7 +20,7 @@ const UploadButton = ({ flag, setFlag }) => {
       .insert([{
         id: videoId,
         name: fileName,
-        url: `https://d3v6emoc2mddy2.cloudfront.net/${user.id}/${videoId}/${fileName}`,
+        url: `https://d1og1onrhr4ymj.cloudfront.net/${user.id}/${videoId}/${fileName}`,
         user_id: user.id
       }])
     if (error) {
@@ -36,7 +36,7 @@ const UploadButton = ({ flag, setFlag }) => {
     const file = fileInput.current.files[0]
     // Replace () since it creates parsing problems when selecting the video
     // using Supabase filters (for eg when updating the DB to add subtitle URL)
-    let fileName = file.name.replace(/\(/g, " ").replace(/\)/g, "");
+    let fileName = file?.name?.replace(/\(/g, " ").replace(/\)/g, "") || "default_filename";
 
     const videoId = window.crypto.randomUUID()
     const { data: { user } } = await supabase.auth.getUser()

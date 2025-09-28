@@ -2,7 +2,7 @@ import { NextResponse } from "next/server";
 import { S3Client, PutObjectCommand, S3ClientConfig } from "@aws-sdk/client-s3";
 import { getSignedUrl } from "@aws-sdk/s3-request-presigner";
 
-const S3_BUCKET = "fireplace-videos";
+const S3_BUCKET = "fireplace-videos-saif";
 const REGION = "us-east-1";
 const URL_EXPIRATION_TIME = 18000; // in seconds (5 hrs)
 

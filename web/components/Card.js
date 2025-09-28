@@ -51,7 +51,7 @@ const Card = ({ video, setVideos }) => {
   };
 
   const updateDb = async (userId, subtitleFilename) => {
-    const subtitleUrl = `https://d3v6emoc2mddy2.cloudfront.net/${userId}/${video.id}/${subtitleFilename}`
+    const subtitleUrl = `https://d1og1onrhr4ymj.cloudfront.net/${userId}/${video.id}/${subtitleFilename}`
     const { error } = await supabase
       .from("fireplace-videos")
       .update({

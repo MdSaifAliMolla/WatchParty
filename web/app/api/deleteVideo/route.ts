@@ -5,7 +5,7 @@ import {
 } from '@aws-sdk/client-s3'
 import { NextResponse } from 'next/server';
 
-const S3_BUCKET = "fireplace-videos";
+const S3_BUCKET = "fireplace-videos-saif";
 const REGION = "us-east-1";
 
 const s3Config: S3ClientConfig = {
