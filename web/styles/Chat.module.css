@@ -1,0 +1,80 @@
+.container {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    width: 100%;
+    justify-content: flex-end;
+}
+
+.chat {
+    flex: 1 auto;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-start;
+    overflow-y: scroll;
+    overflow-x: hidden;
+    margin: 10px 0;
+}
+
+.chat::-webkit-scrollbar {
+    background-color: transparent;
+    width: 7px;
+}
+
+.chat::-webkit-scrollbar-thumb {
+    background-color: #696969;
+    border-radius: 7px;
+}
+
+.wrapper {
+    max-width: 100%;
+}
+
+.container input {
+    height: 40px;
+    border-radius: 7px;
+    border: 1px solid #696969;
+    background-color: black;
+    color: white;
+    padding: 0 10px;
+}
+
+.container input::placeholder {
+    color: white;
+}
+
+.container input:focus {
+    outline: none;
+}
+
+.inputWrapper {
+    display: flex;
+    align-items: center;
+}
+
+.inputWrapper input {
+    flex: 1 auto
+}
+
+.sendIcon {
+    width: 40px;
+    height: 40px;
+    background-color: #C4C4C4;
+    border-radius: 7px;
+    border: none;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: 5px;
+    cursor: pointer;
+    transform: 0.3s all;
+}
+
+.sendIcon:hover {
+    background-color: white;
+}
+
+.nickname {
+    font-size: 12px;
+    left: 15px;
+}
