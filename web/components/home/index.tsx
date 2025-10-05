@@ -46,7 +46,7 @@ export default function Home() {
     <div className="w-full h-[100vh] bg-black">
       <div className="mt-10 absolute z-10 w-full text-center pt-2">
         <Image
-          className="mx-auto"
+          className="mx-auto translate-x-6 "
           src="/Logo.png"
           alt="fireplace logo"
           height={75}
@@ -62,14 +62,14 @@ const VideoPlayer = () => {
   const src = "https://sorxybcoqgcofqmjysrg.supabase.co/storage/v1/object/public/assets/Mars.mp4?t=2022-11-29T17%3A25%3A51.704Z"
   const partyId = 123
   const creatorId = 123
-  const ws = { current: { send: () => {} } }
+  const ws = { current: { send: () => { } } }
 
   const videoRef = useRef(null)
   const containerRef = useRef(null)
   const controlsRef = useRef(null)
 
   return (
-    <div ref={containerRef} 
+    <div ref={containerRef}
       onMouseMove={() => handleMouseMovement(containerRef.current, controlsRef.current)}
       id="video-player"
       className="relative overflow-hidden">
@@ -86,7 +86,7 @@ const VideoPlayer = () => {
           </button>
         </Link>
       </div>
-      <video 
+      <video
         id="video"
         autoPlay
         muted
@@ -106,9 +106,9 @@ const VideoPlayer = () => {
       <Toaster
         toastOptions={{
           style: {
-          minWidth: "300px"
+            minWidth: "300px"
           }
-        }} 
+        }}
       />
     </div>
   )

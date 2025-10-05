@@ -28,18 +28,32 @@ const Card = ({ video, setVideos }) => {
 
     // const promise = deleteFile(id)
     const promise = new Promise(async (resolve, reject) => {
-      const { err } = await fetch("/api/deleteVideo", reqObject);
-      const { error } = await supabase
-        .from("fireplace-videos")
-        .delete()
-        .eq("id", id);
+      try {
+        // Delete related watchparties first to avoid foreign key violation
+        const { error: watchpartyError } = await supabase
+          .from("watchparties")
+          .delete()
+          .eq("video_id", id);
 
-      if (err || error) {
-        reject();
-        throw new Error(err);
-      } else {
-        setVideos(prevVideos => prevVideos.filter((video) => video.id != id));
-        resolve();
+        if (watchpartyError) {
+          console.error("Error deleting watchparties:", watchpartyError);
+          // We continue anyway, as the conflict error from the next step will provide context if it persists
+        }
+
+        const response = await fetch("/api/deleteVideo", reqObject);
+        const { error } = await supabase
+          .from("fireplace-videos")
+          .delete()
+          .eq("id", id);
+
+        if (!response.ok || error) {
+          reject(error?.message || "Failed to delete video");
+        } else {
+          setVideos(prevVideos => prevVideos.filter((video) => video.id != id));
+          resolve();
+        }
+      } catch (e) {
+        reject(e.message);
       }
     });
 

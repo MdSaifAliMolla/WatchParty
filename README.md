@@ -1,35 +1,50 @@
-# Fireplace
+# WatchParty (Fireplace)
 
-Fireplace is an easy to use media playback service that lets you upload video content and create watchparties which can be enjoyed with friends and family anywhere around the world!
+A real-time watch party application for synchronized video viewing with friends.
 
-It's complete with user authentication, real time playback and voice chat. All you need to do is invite your friends and have a good time at Fireplace :)
+## How it works
 
-[Here's a link to the working site](https://fireplace-debabratajr.vercel.app/).
-
-[And here's a link to the server repo.](https://github.com/0xDebabrata/fireplace-server)
-
-
-### How it works
-
-1. When a user signs up, Fireplace sends a magic link using Supabase's authentication service.
+1. When a user signs up, the app sends a magic link using Supabase's authentication service.
 2. All uploaded videos are stored in AWS S3.
-3. Playback controls are synced in real time with the help of a websocket server.
-4. Voice chat is enabled using Dolby's APIs. The voice chat features spatial audio, allowing multiple participants to be heard clearly even when speaking at the same time.
+3. Playback controls are synced in real time with the help of a WebSocket server.
+4. Voice chat is enabled using WebRTC peer-to-peer connections with free STUN servers.
 
-Vercel has been used to host the next.js app and AWS to deploy the websocket server.
+## Getting Started
 
-### The process
+### Prerequisites
+- Node.js >= 16.0.0
+- npm
 
-The motivation for creating Fireplace came from wanting to watch videos with my friends in a seamless manner. The pandemic made it even more necessary to find new ways to connect with friends and relatives. Dolby provided a great opportunity in making this possible. 
+### Running the Backend (WebSocket Server)
 
-From the get go I wanted to use websocket to sync the video streams, but implementing it was a challenge on it's own. Voice chat with spatial audio added a whole new interactive dimension.
+```bash
+cd server
+npm install
+npm run dev
+```
 
+The server runs on `http://localhost:6969` by default.
 
-### What's next?
+### Running the Frontend (Next.js App)
 
-Build the World hackathon has been fun and I'm excited to submit this version of Fireplace. However, I have plans to further improve the website.
+```bash
+cd web
+npm install
+npm run dev
+```
 
-1. Fireplace currently supports 5 participants at a watchparty. This can be increased in the future.
-2. Improve the custom video player.
-3. Improve website performance.
+The frontend runs on `http://localhost:3000`.
 
+### Environment Variables
+
+**Frontend (`web/.env.local`):**
+- `NEXT_PUBLIC_SUPABASE_URL` - Your Supabase project URL
+- `SUPABASE_SERVICE_ROLE_KEY` - Your Supabase service role key
+- `NEXT_PUBLIC_WEBSOCKET_URL` - WebSocket server URL (default: `ws://localhost:6969`)
+- `NEXT_PUBLIC_SERVER_URL` - Server URL (default: `http://localhost:6969`)
+- `NEXT_PUBLIC_SITE_URL` - Your site URL for share links
+
+## Deployment
+
+- Frontend: Vercel
+- Backend: AWS or any Node.js hosting platform

@@ -29,10 +29,15 @@ export default function CreateClientComponent(props: CreateClientProps) {
   const [partyId, setPartyId] = useState<string | null>(null)
   const [nickname, setNickname] = useState("")
   const [link, setLink] = useState<string | null>(null)
+  const [siteUrl, setSiteUrl] = useState<string>(process.env.NEXT_PUBLIC_SITE_URL || "")
 
   useEffect(() => {
     setLoading(true)
     const clientId = session.user.id
+
+    if (typeof window !== 'undefined') {
+      setSiteUrl(window.location.origin)
+    }
 
     const { creatorId, id } = params
     setCreatorUserId(creatorId)
@@ -71,7 +76,7 @@ export default function CreateClientComponent(props: CreateClientProps) {
               id="link"
               type="text"
               readOnly={true}
-              value={`${process.env.NEXT_PUBLIC_SITE_URL}/${link}`}
+              value={`${siteUrl}/${link}`}
               className="px-3 py-1.5 w-full rounded-md bg-neutral-800 text-sm text-neutral-200"
             />
             <button 

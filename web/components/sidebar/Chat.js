@@ -1,3 +1,4 @@
+// web/components/sidebar/Chat.js
 import { useEffect, useState } from "react"
 import Image from "next/image"
 import ChatMessage from "./ChatMessage"
@@ -21,21 +22,19 @@ const Chat = ({ session, ws, partyId, messageList, setMessageList }) => {
       ws.current.send(JSON.stringify(payload))
     }
 
-    setMessageList(oldArr => {
-      return [...oldArr, {
-        message: message,
-        sent: true ,
-        type: "message",
-      }]
-    })
-
+    // REMOVED: Don't add message locally - wait for server broadcast
+    // This prevents duplicate messages since the server will broadcast
+    // the message back to all clients including the sender
+    
     setMessage("")
   }
 
   // Auto scroll to bottom of chat whenever new message is added
   useEffect(() => {
     const chat = document.getElementById("chat")
-    chat.scrollTop = chat.scrollHeight
+    if (chat) {
+      chat.scrollTop = chat.scrollHeight
+    }
   }, [messageList])
 
   return (
@@ -44,7 +43,11 @@ const Chat = ({ session, ws, partyId, messageList, setMessageList }) => {
         className={styles.chat}
       >
         {messageList.map((messageObj, index) => (
-          <ChatMessage messageObj={messageObj} key={index} />
+          <ChatMessage 
+            messageObj={messageObj} 
+            key={index}
+            currentUserId={session?.user.id}
+          />
         ))}
       </div>
       <form className={styles.inputWrapper} onSubmit={addMessage}>

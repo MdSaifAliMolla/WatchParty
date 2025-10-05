@@ -13,19 +13,19 @@ export const updateVolume = (e, vid, setVolume, setAudio) => {
         setAudio(true)
     }
 
-    const value = (e.currentTarget.value - e.currentTarget.min)/(e.currentTarget.max - e.currentTarget.min)*100
+    const value = (e.currentTarget.value - e.currentTarget.min) / (e.currentTarget.max - e.currentTarget.min) * 100
     e.currentTarget.style.background = 'linear-gradient(to right, #fff 0%, #fff ' + value + '%, #696969 ' + value + '%, #696969 100%)';
 }
 
 export const updateProgress = (vid, bar, setTime) => {
-    const percent = (vid.currentTime/vid.duration)*100
+    const percent = (vid.currentTime / vid.duration) * 100
     setTime(formatTime(vid.currentTime))
     bar.style.width = `${percent}%`
 }
 
 export const seek = (e, vid) => {
-    const seekTime = (e.clientX / e.currentTarget.offsetWidth)*vid.duration
-    vid.currentTime = seekTime.toString()
+    const seekTime = (e.clientX / e.currentTarget.offsetWidth) * vid.duration;
+    vid.currentTime = seekTime;
 }
 
 export const formatTime = (sec) => {
@@ -37,11 +37,11 @@ export const formatTime = (sec) => {
     let seconds = Math.ceil(secDivisor)
 
     if (hours === 0) {
-        seconds = seconds >= 10 ? seconds : "0" + seconds 
-        return mins+":"+seconds
+        seconds = seconds >= 10 ? seconds : "0" + seconds
+        return mins + ":" + seconds
     } else {
-        seconds = seconds >= 10 ? seconds : "0" + seconds 
-        return hours+":"+mins+":"+seconds
+        seconds = seconds >= 10 ? seconds : "0" + seconds
+        return hours + ":" + mins + ":" + seconds
     }
 }
 
@@ -57,7 +57,7 @@ export const noAudio = (vid, setAudio, setVolume, ref) => {
         setVolume(1)
         ref.style.background = 'linear-gradient(to right, #fff 0%, #fff ' + 100 + '%, #696969 ' + 100 + '%, #696969 100%)';
     }
-} 
+}
 
 export const handleFullscreen = (ref) => {
     if (document.fullscreenElement) {
@@ -74,15 +74,15 @@ export const handleMouseMovement = (ref, controls) => {
     if (timer) {
         clearTimeout(timer)
         ref.setAttribute("timer", "")
-        controls.style.visibility = "visible" 
+        controls.style.visibility = "visible"
     }
     const t = setTimeout(() => {
         ref.setAttribute("timer", "")
         player.style.cursor = "none";
-        controls.style.visibility = "hidden" 
+        controls.style.visibility = "hidden"
     }, 3500)
 
     ref.setAttribute("timer", t)
     player.style.cursor = "default";
-    controls.style.visibility = "visible" 
+    controls.style.visibility = "visible"
 }
