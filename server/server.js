@@ -10,7 +10,9 @@ const server = http.createServer(app);
 // CORS configuration
 app.use(
   cors({
-    origin: "*",
+    origin: (origin, callback) => {
+      callback(null, origin || "*");
+    },
     credentials: true,
   })
 );
@@ -30,6 +32,7 @@ class Client {
     this.nickname = "";
     this.party = party;
     this.isAlive = true;
+    this.voiceEnabled = false;
   }
 }
 
@@ -67,6 +70,15 @@ class Party {
     if (this.clients.has(client)) {
       this.clients.delete(client);
       this.broadcastJoinOrLeave("leave", client);
+
+      if (client.voiceEnabled) {
+        const voiceDisabledMsg = {
+          method: "voice-disabled",
+          userId: client.id,
+          partyId: this.party.id,
+        };
+        this.broadcast(JSON.stringify(voiceDisabledMsg), null);
+      }
     }
   }
 
@@ -78,6 +90,19 @@ class Party {
         } catch (error) {
           console.error("Error sending message:", error);
           this.clients.delete(client);
+        }
+      }
+    });
+  }
+
+  // Broadcast to specific client
+  sendToClient(clientId, message) {
+    this.clients.forEach((_, client) => {
+      if (client.id === clientId && client.ws.readyState === WebSocket.OPEN) {
+        try {
+          client.ws.send(message);
+        } catch (error) {
+          console.error("Error sending message to client:", error);
         }
       }
     });
@@ -123,6 +148,7 @@ class Party {
       nickname: client.nickname,
       partyId: msg.partyId,
       message: msg.message,
+      timestamp: Date.now(),
     };
 
     const resp = JSON.stringify(data);
@@ -157,6 +183,44 @@ class Party {
     setInterval(() => {
       this.broadcastWatchpartyStatus();
     }, 2000);
+  }
+
+  // WebRTC signaling methods
+  handleVoiceEnabled(client) {
+    console.log(`${client.nickname} enabled voice chat`);
+    client.voiceEnabled = true;
+
+    // Broadcast to all other clients that this user enabled voice
+    const voiceEnabledMsg = {
+      method: "voice-enabled",
+      userId: client.id,
+      partyId: this.party.id,
+    };
+
+    this.broadcast(JSON.stringify(voiceEnabledMsg), client.id);
+  }
+
+  handleVoiceDisabled(client) {
+    console.log(`${client.nickname} disabled voice chat`);
+    client.voiceEnabled = false;
+
+    // Broadcast to all other clients that this user disabled voice
+    const voiceDisabledMsg = {
+      method: "voice-disabled",
+      userId: client.id,
+      partyId: this.party.id,
+    };
+
+    this.broadcast(JSON.stringify(voiceDisabledMsg), client.id);
+  }
+
+  handleWebRTCSignaling(msg, client) {
+    // Forward WebRTC signaling messages to the intended recipient
+    const targetClientId = msg.to;
+
+    if (targetClientId) {
+      this.sendToClient(targetClientId, JSON.stringify(msg));
+    }
   }
 }
 
@@ -274,6 +338,41 @@ wss.on("connection", (ws, req) => {
         case "chat":
           party.broadcastChatMessage(msg, client);
           break;
+
+        case "keepAlive":
+          // Client heartbeat - no action needed
+          break;
+
+        // WebRTC Voice Chat signaling
+        case "voice-enabled":
+          party.handleVoiceEnabled(client);
+          break;
+
+        case "voice-disabled":
+          party.handleVoiceDisabled(client);
+          break;
+
+        case "voice-offer":
+        case "voice-answer":
+        case "voice-ice-candidate":
+          party.handleWebRTCSignaling(msg, client);
+          break;
+
+        case "end":
+          if (client.id === party.party.ownerId) {
+            const endMsg = JSON.stringify({ method: "party-ended", partyId: party.party.id });
+            party.clients.forEach((_, c) => {
+              if (c.ws.readyState === WebSocket.OPEN) {
+                c.ws.send(endMsg);
+              }
+            });
+            watchparties.delete(partyId);
+            console.log(`Watchparty ${partyId} ended by owner.`);
+          }
+          break;
+
+        default:
+          console.log("Unknown message method:", msg.method);
       }
     } catch (error) {
       console.error("Error parsing message:", error);

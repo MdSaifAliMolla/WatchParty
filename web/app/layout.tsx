@@ -2,7 +2,7 @@ import '../styles/globals.css'
 import { Analytics } from "@vercel/analytics/react"
 
 export const metadata = {
-  title: 'Fireplace: Watch movies with friends',
+  title: 'Bonfire: Watch movies with friends',
   description: 'Create watch parties and watch movies with friends online in real time',
 }
 

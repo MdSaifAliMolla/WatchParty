@@ -6,6 +6,7 @@ export const handlePlay = (id, creatorId, ws) => {
     clientId: creatorId,
   };
 
+  if (!ws?.current || ws.current.readyState !== WebSocket.OPEN) return;
   ws.current.send(JSON.stringify(payload));
 };
 
@@ -17,6 +18,7 @@ export const handlePause = (id, creatorId, ws) => {
     clientId: creatorId,
   };
 
+  if (!ws?.current || ws.current.readyState !== WebSocket.OPEN) return;
   ws.current.send(JSON.stringify(payload));
 };
 
@@ -32,6 +34,7 @@ export const handleSeeked = (id, creatorId, ws) => {
     playhead: playhead,
   };
 
+  if (!ws?.current || ws.current.readyState !== WebSocket.OPEN) return;
   ws.current.send(JSON.stringify(payload));
 };
 
@@ -39,7 +42,7 @@ export const handleSeeked = (id, creatorId, ws) => {
 export const loadStartPosition = (playheadStart) => {
   const vid = document.getElementById("video");
   if (!vid) return;
-  vid.currentTime = playheadStart.toString();
+  vid.currentTime = Number(playheadStart) || 0;
 };
 
 // Periodically update playhead status
@@ -53,7 +56,9 @@ export const updatePlayhead = (partyId, ws) => {
     playhead: playhead || 0,
   };
 
-  ws.current.send(JSON.stringify(payload));
+  if (ws?.current && ws.current.readyState === WebSocket.OPEN) {
+    ws.current.send(JSON.stringify(payload));
+  }
 
   setTimeout(() => updatePlayhead(partyId, ws), 300);
 };
@@ -64,7 +69,9 @@ export const keepAlive = (userId, ws) => {
     clientId: userId,
   };
 
-  ws.current.send(JSON.stringify(payload));
+  if (ws?.current && ws.current.readyState === WebSocket.OPEN) {
+    ws.current.send(JSON.stringify(payload));
+  }
 
   setTimeout(() => keepAlive(userId, ws), 25000);
 };

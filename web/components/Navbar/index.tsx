@@ -16,13 +16,14 @@ const Navbar = ({ session }: NavbarProps) => {
       >
         <Image
           src="/Logo.png"
-          alt="fireplace logo"
+          className='translate-x-8 pt-1'
+          alt="Bonfire logo"
           height={50}
           width={160}
         />
       </Link>
 
-      {session ? <LogoutButton /> : null } 
+      {session ? <LogoutButton /> : null}
     </nav>
   )
 }

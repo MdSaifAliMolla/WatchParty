@@ -26,7 +26,7 @@ export default function JoinClientComponent({ params }: JoinClientProps) {
       // Join watchparty
       const { creatorId, id } = params
       const link = `/${creatorId}/${id}/join/`
-      router.push(`${link}${nickname}/`)
+      router.push(`${link}${encodeURIComponent(nickname)}/`)
     }
   }
 

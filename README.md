@@ -1,35 +1,191 @@
-# Fireplace
+# Bonfire
 
-Fireplace is an easy to use media playback service that lets you upload video content and create watchparties which can be enjoyed with friends and family anywhere around the world!
+A real-time watch party application for synchronized video viewing with friends. Experience movies, shows, and videos together with voice chat, synchronized playback controls, and real-time messaging.
 
-It's complete with user authentication, real time playback and voice chat. All you need to do is invite your friends and have a good time at Fireplace :)
+## Features
 
-[Here's a link to the working site](https://fireplace-debabratajr.vercel.app/).
+- **Synchronized Video Playback**: Play, pause, and seek controls are synced across all participants in real-time
+- **Voice Chat**: Peer-to-peer WebRTC voice communication during watch parties
+- **Real-time Chat**: Text messaging with timestamps for all participants
+- **Magic Link Authentication**: Passwordless login using Supabase email magic links
+- **Cloud Video Storage**: Upload and stream videos directly from AWS S3
+- **Shareable Links**: Easy invitation system for friends to join watch parties
+- **Responsive Design**: Modern UI built with Next.js and Tailwind CSS
 
-[And here's a link to the server repo.](https://github.com/0xDebabrata/fireplace-server)
+## System Architecture
+
+### Core Components
+
+#### 1. Frontend (Next.js)
+- **Framework**: Next.js 13 with App Router
+- **UI Library**: React 18 with TypeScript
+- **Styling**: Tailwind CSS with Headless UI components
+- **State Management**: React hooks and SWR for server state
+- **Real-time Communication**: WebSocket client and WebRTC peer connections
+
+#### 2. WebSocket Server (Node.js)
+- **Framework**: Express.js with HTTP server
+- **WebSocket Library**: ws library for real-time communication
+- **Core Responsibilities**:
+  - Managing watch party sessions
+  - Broadcasting playback controls (play/pause/seek)
+  - Handling chat messages
+  - WebRTC signaling for voice chat
+  - Client connection management with heartbeat
+
+#### 3. External Services
+- **Authentication**: Supabase Auth with magic link emails
+- **Storage**: AWS S3 for video file storage and CDN delivery
+- **WebRTC**: Free STUN servers for NAT traversal
+
+### Data Flow
+
+#### Authentication Flow
+1. User enters email → Supabase sends magic link
+2. User clicks magic link → Supabase authenticates user
+3. Frontend receives auth token → User is logged in
+
+#### Watch Party Creation Flow
+1. Authenticated user uploads video to AWS S3
+2. Frontend requests party creation from WebSocket server
+3. Server creates party instance with unique ID
+4. Shareable link generated for inviting friends
+
+#### Real-time Synchronization Flow
+1. User action (play/pause/seek) → WebSocket message to server
+2. Server broadcasts action to all party participants
+3. Clients receive message and synchronize video player state
+4. Status broadcast every 2 seconds ensures consistency
+
+#### Voice Chat Flow
+1. User enables voice chat → WebRTC peer connection setup
+2. Server acts as signaling server for WebRTC
+3. Direct peer-to-peer audio streams established
+4. Server relays signaling messages only
+
+### Database Schema (Supabase)
+
+```sql
+-- Users table (handled by Supabase Auth)
+users (
+  id: uuid (primary key),
+  email: text,
+  created_at: timestamp
+)
+
+-- Watch parties table
+watch_parties (
+  id: text (primary key),
+  owner_id: uuid (foreign key),
+  video_src: text,
+  created_at: timestamp,
+  is_active: boolean
+)
+
+-- Party participants table
+party_participants (
+  id: uuid (primary key),
+  party_id: text (foreign key),
+  user_id: uuid (foreign key),
+  joined_at: timestamp,
+  nickname: text
+)
+```
+
+### API Endpoints
+
+#### WebSocket Server
+- `GET /` - Health check endpoint
+- `GET /create?ownerId={id}&partyId={id}&src={url}` - Create new watch party
+- `WebSocket /?userId={id}&partyId={id}` - Real-time connection
+
+#### WebSocket Message Types
+- `join` - User joins party with nickname
+- `play/pause` - Playback control synchronization
+- `seeked/update` - Video position synchronization
+- `chat` - Text messaging
+- `voice-enabled/disabled` - Voice chat status
+- `voice-offer/answer/ice-candidate` - WebRTC signaling
+- `end` - Party termination (owner only)
 
 
-### How it works
+## Getting Started
 
-1. When a user signs up, Fireplace sends a magic link using Supabase's authentication service.
-2. All uploaded videos are stored in AWS S3.
-3. Playback controls are synced in real time with the help of a websocket server.
-4. Voice chat is enabled using Dolby's APIs. The voice chat features spatial audio, allowing multiple participants to be heard clearly even when speaking at the same time.
+### Prerequisites
+- Node.js >= 16.0.0
+- npm
+- Supabase account (for authentication)
+- AWS account (for S3 storage)
 
-Vercel has been used to host the next.js app and AWS to deploy the websocket server.
+### Installation
 
-### The process
+#### 1. Clone the Repository
+```bash
+git clone <repository-url>
+cd Bonfire
+```
 
-The motivation for creating Fireplace came from wanting to watch videos with my friends in a seamless manner. The pandemic made it even more necessary to find new ways to connect with friends and relatives. Dolby provided a great opportunity in making this possible. 
+#### 2. Set Up Backend (WebSocket Server)
+```bash
+cd server
+npm install
+```
 
-From the get go I wanted to use websocket to sync the video streams, but implementing it was a challenge on it's own. Voice chat with spatial audio added a whole new interactive dimension.
+#### 3. Set Up Frontend (Next.js App)
+```bash
+cd ../web
+npm install
+```
 
+### Configuration
 
-### What's next?
+#### Environment Variables
 
-Build the World hackathon has been fun and I'm excited to submit this version of Fireplace. However, I have plans to further improve the website.
+**Backend (`server/.env`):**
+```env
+PORT=6969
+NODE_ENV=development
+```
 
-1. Fireplace currently supports 5 participants at a watchparty. This can be increased in the future.
-2. Improve the custom video player.
-3. Improve website performance.
+**Frontend (`web/.env`):**
+```env
+NEXT_PUBLIC_SUPABASE_URL=your_supabase_project_url
+SUPABASE_SERVICE_ROLE_KEY=your_supabase_service_role_key
+NEXT_PUBLIC_WEBSOCKET_URL=ws://localhost:6969
+NEXT_PUBLIC_SERVER_URL=http://localhost:6969
+NEXT_PUBLIC_SITE_URL=http://localhost:3000
+```
 
+#### External Services Setup
+
+**Supabase Configuration:**
+1. Create new Supabase project
+2. Enable email authentication
+3. Configure redirect URLs for magic links
+4. Set up database tables (see schema above)
+5. Generate service role key
+
+**AWS S3 Configuration:**
+1. Create S3 bucket for video storage
+2. Configure CORS policy for bucket access
+3. Set up IAM user with S3 permissions
+4. Generate access keys for the application
+
+### Running the Application
+
+#### 1. Start the WebSocket Server
+```bash
+cd server
+npm run dev
+```
+The server runs on `http://localhost:6969` by default.
+
+#### 2. Start the Frontend
+```bash
+cd web
+npm run dev
+```
+The frontend runs on `http://localhost:3000`.
+
+#### 3. Access the Application
+Open `http://localhost:3000` in your browser and start creating watch parties!

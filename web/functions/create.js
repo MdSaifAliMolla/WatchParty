@@ -7,7 +7,7 @@ export const createWatchparty = async (id, clientId, supabase, setLoading) => {
 
   if (!error) {
     const src = watchparties[0]["fireplace-videos"].url
-    await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/create?ownerId=${clientId}&partyId=${id}&src=${src}`, {
+    await fetch(`${process.env.NEXT_PUBLIC_SERVER_URL}/create?ownerId=${clientId}&partyId=${id}&src=${encodeURIComponent(src)}`, {
       method: 'GET'
     })
     setLoading(false)
@@ -23,7 +23,7 @@ export const handleClick = (nickname, creatorId, id, toast, router) => {
     toast.error("Please enter a nickname")
   } else {
     // Join watchparty
-    router.push(`/${creatorId}/${id}/join/${nickname}`)
+    router.push(`/${creatorId}/${id}/join/${encodeURIComponent(nickname)}`)
   }
 }
 
