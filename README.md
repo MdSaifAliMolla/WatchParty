@@ -2,7 +2,12 @@
 
 A real-time watch party application for synchronized video viewing with friends. Experience movies, shows, and videos together with voice chat, synchronized playback controls, and real-time messaging.
 
-## Features
+<img width="1700" height="700" alt="Screenshot (65)" src="https://github.com/user-attachments/assets/4c9b4865-6d5c-4eb6-8f6c-045fa4a171a0" />
+<img width="1700" height="700" alt="Screenshot (62)" src="https://github.com/user-attachments/assets/4c06c0ea-dd8e-4e4f-90ee-df1a675e56df" />
+<img width="1700" height="700" alt="Screenshot (63)" src="https://github.com/user-attachments/assets/5b08ad05-a408-4ed5-814c-f9da0fa6b3fd" />
+<img width="1700" height="700" alt="Screenshot (66)" src="https://github.com/user-attachments/assets/b4b093ba-e4ad-48f2-b1a5-9544ab18bc59" />
+
+##Features
 
 - **Synchronized Video Playback**: Play, pause, and seek controls are synced across all participants in real-time
 - **Voice Chat**: Peer-to-peer WebRTC voice communication during watch parties
