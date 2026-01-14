@@ -13,7 +13,7 @@ A real-time watch party application for synchronized video viewing with friends.
 - **Synchronized Video Playback**: Play, pause, and seek controls are synced across all participants in real-time
 - **Voice Chat**: Peer-to-peer WebRTC voice communication during watch parties
 - **Real-time Chat**: Text messaging with timestamps for all participants
-- **Magic Link Authentication**: Passwordless login using Supabase email magic links
+- **Authentication**: login using Supabase 
 - **Cloud Video Storage**: Upload and stream videos directly from AWS S3
 - **Shareable Links**: Easy invitation system for friends to join watch parties
 - **Responsive Design**: Modern UI built with Next.js and Tailwind CSS
@@ -24,7 +24,6 @@ A real-time watch party application for synchronized video viewing with friends.
 
 #### 1. Frontend (Next.js)
 - **Framework**: Next.js 13 with App Router
-- **UI Library**: React 18 with TypeScript
 - **Styling**: Tailwind CSS with Headless UI components
 - **State Management**: React hooks and SWR for server state
 - **Real-time Communication**: WebSocket client and WebRTC peer connections
