@@ -7,7 +7,8 @@ A real-time watch party application for synchronized video viewing with friends.
 <img width="1700" height="700" alt="Screenshot (63)" src="https://github.com/user-attachments/assets/5b08ad05-a408-4ed5-814c-f9da0fa6b3fd" />
 <img width="1700" height="700" alt="Screenshot (66)" src="https://github.com/user-attachments/assets/b4b093ba-e4ad-48f2-b1a5-9544ab18bc59" />
 
-##Features
+
+### Features
 
 - **Synchronized Video Playback**: Play, pause, and seek controls are synced across all participants in real-time
 - **Voice Chat**: Peer-to-peer WebRTC voice communication during watch parties
@@ -17,7 +18,7 @@ A real-time watch party application for synchronized video viewing with friends.
 - **Shareable Links**: Easy invitation system for friends to join watch parties
 - **Responsive Design**: Modern UI built with Next.js and Tailwind CSS
 
-## System Architecture
+### System Architecture
 
 ### Core Components
 
